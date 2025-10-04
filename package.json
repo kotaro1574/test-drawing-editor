@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@erase2d/fabric": "^1.1.8",
     "fabric": "^6.7.1",
     "next": "15.5.4",
     "react": "19.1.0",
