@@ -1,6 +1,6 @@
 "use client";
 
-import DrawingCanvas from "@/components/DrawingCanvas";
+import { DrawingCanvas } from "@/components/DrawingCanvas";
 
 export default function Home() {
   return (

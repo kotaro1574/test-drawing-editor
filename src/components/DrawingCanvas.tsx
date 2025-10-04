@@ -2,10 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
+import { EraserBrush } from "@erase2d/fabric";
 
-export default function DrawingCanvas() {
+const DEFAULT_COLOR = "#000000";
+const DEFAULT_WIDTH = 10;
+
+export function DrawingCanvas() {
   const canvasEl = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+  const [color, setColor] = useState(DEFAULT_COLOR);
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
 
   useEffect(() => {
     if (canvasEl.current === null) {
@@ -17,10 +23,15 @@ export default function DrawingCanvas() {
 
     // 手書き機能を追加
     const pencil = new fabric.PencilBrush(canvas);
-    pencil.color = "#000000";
-    pencil.width = 10;
+    pencil.color = DEFAULT_COLOR;
+    pencil.width = DEFAULT_WIDTH;
     canvas.freeDrawingBrush = pencil;
     canvas.isDrawingMode = true;
+
+    // 消しゴムで線を消せるようにするため
+    canvas.on("object:added", (e) => {
+      e.target.erasable = true;
+    });
 
     return () => {
       canvas.dispose();
@@ -31,28 +42,49 @@ export default function DrawingCanvas() {
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.color = "#ff0000";
+    canvas.freeDrawingBrush.width = width;
+    setColor("#ff0000");
   };
 
   const changeToBlack = () => {
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.color = "#000000";
+    canvas.freeDrawingBrush.width = width;
+    setColor("#000000");
   };
 
   const changeToThick = () => {
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = 20;
+    canvas.freeDrawingBrush.color = color;
+    setWidth(20);
   };
 
   const changeToThin = () => {
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = 10;
+    canvas.freeDrawingBrush.color = color;
+    setWidth(10);
+  };
+
+  const changeToEraser = () => {
+    if (canvas?.freeDrawingBrush === undefined) {
+      return;
+    }
+    const eraser = new EraserBrush(canvas);
+    canvas.freeDrawingBrush = eraser;
+    canvas.freeDrawingBrush.width = 20;
   };
 
   return (
@@ -83,6 +115,12 @@ export default function DrawingCanvas() {
           className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
         >
           Thin
+        </button>
+        <button
+          onClick={changeToEraser}
+          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
+        >
+          Eraser
         </button>
       </div>
     </div>
