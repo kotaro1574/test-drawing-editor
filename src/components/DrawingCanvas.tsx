@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
 import { EraserBrush } from "@erase2d/fabric";
 
@@ -87,6 +87,66 @@ export function DrawingCanvas() {
     canvas.freeDrawingBrush.width = 20;
   };
 
+  const [histories, setHistories] = useState<{
+    undo: object[];
+  }>({
+    undo: [],
+  });
+
+  const isCanvasLocked = useRef(false);
+
+  useEffect(() => {
+    if (!canvas) {
+      return;
+    }
+
+    // 空のcanvasを履歴の初期値に追加
+    setHistories({
+      undo: [canvas.toJSON()],
+    });
+
+    const onCanvasModified = (e: { target: fabric.FabricObject }) => {
+      if (isCanvasLocked.current) {
+        return;
+      }
+
+      const targetCanvas = e.target.canvas;
+      if (targetCanvas) {
+        setHistories((prev) => ({
+          undo: [...prev.undo, targetCanvas.toJSON()],
+        }));
+      }
+    };
+
+    canvas.on("object:added", onCanvasModified);
+
+    return () => {
+      canvas.off("object:added", onCanvasModified);
+    };
+  }, [canvas]);
+
+  const undo = useCallback(async () => {
+    if (!canvas || isCanvasLocked.current) {
+      return;
+    }
+
+    const lastHistory = histories.undo.at(-2);
+    const currentHistory = histories.undo.at(-1);
+    if (!lastHistory || !currentHistory) {
+      return;
+    }
+
+    isCanvasLocked.current = true;
+
+    await canvas.loadFromJSON(lastHistory);
+    canvas.renderAll();
+    setHistories((prev) => ({
+      undo: prev.undo.slice(0, -1),
+    }));
+
+    isCanvasLocked.current = false;
+  }, [canvas, histories.undo]);
+
   return (
     <div className="flex flex-col items-center">
       <canvas width="1000" height="1000" ref={canvasEl} className="border" />
@@ -121,6 +181,13 @@ export function DrawingCanvas() {
           className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
         >
           Eraser
+        </button>
+
+        <button
+          onClick={undo}
+          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
+        >
+          Undo
         </button>
       </div>
     </div>
