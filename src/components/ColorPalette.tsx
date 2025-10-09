@@ -1,8 +1,12 @@
 "use client";
 
+import { Slider } from "./ui/slider";
+
 interface ColorPaletteProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
+  opacity: number;
+  changeOpacity: (value: number[]) => void;
 }
 
 const COLORS = [
@@ -40,6 +44,8 @@ const COLORS = [
 export function ColorPalette({
   selectedColor,
   onColorChange,
+  opacity,
+  changeOpacity,
 }: ColorPaletteProps) {
   return (
     <div className="bg-gray-500 p-4 rounded-lg inline-block">
@@ -59,12 +65,14 @@ export function ColorPalette({
         ))}
       </div>
 
-      <div className="rounded-lg h-12 border-4 border-gray-700">
-        <div
-          className="w-full h-full rounded"
-          style={{ backgroundColor: selectedColor }}
-        />
-      </div>
+      <Slider
+        value={[opacity * 100]}
+        onValueChange={changeOpacity}
+        min={0}
+        max={100}
+        step={1}
+        className="flex-1"
+      />
     </div>
   );
 }

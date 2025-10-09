@@ -5,15 +5,26 @@ import * as fabric from "fabric";
 import { EraserBrush } from "@erase2d/fabric";
 import { ColorPalette } from "./ColorPalette";
 import { Button } from "./ui/button";
+import { Slider } from "./ui/slider";
 
 const DEFAULT_COLOR = "#000000";
 const DEFAULT_WIDTH = 10;
+const DEFAULT_OPACITY = 1;
+
+// HEXをRGBAに変換するユーティリティ関数
+function hexToRgba(hex: string, opacity: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
 
 export function DrawingCanvas() {
   const canvasEl = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [color, setColor] = useState(DEFAULT_COLOR);
   const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const [opacity, setOpacity] = useState(DEFAULT_OPACITY);
 
   useEffect(() => {
     if (canvasEl.current === null) {
@@ -45,9 +56,20 @@ export function DrawingCanvas() {
       return;
     }
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.color = newColor;
+    canvas.freeDrawingBrush.color = hexToRgba(newColor, opacity);
     canvas.freeDrawingBrush.width = width;
     setColor(newColor);
+  };
+
+  const changeOpacity = (value: number[]) => {
+    const newOpacity = value[0] / 100;
+    setOpacity(newOpacity);
+    if (canvas?.freeDrawingBrush === undefined) {
+      return;
+    }
+    if (canvas.freeDrawingBrush instanceof fabric.PencilBrush) {
+      canvas.freeDrawingBrush.color = hexToRgba(color, newOpacity);
+    }
   };
 
   const changeToThick = () => {
@@ -56,7 +78,7 @@ export function DrawingCanvas() {
     }
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = 20;
-    canvas.freeDrawingBrush.color = color;
+    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
     setWidth(20);
   };
 
@@ -66,7 +88,7 @@ export function DrawingCanvas() {
     }
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = 10;
-    canvas.freeDrawingBrush.color = color;
+    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
     setWidth(10);
   };
 
@@ -181,7 +203,14 @@ export function DrawingCanvas() {
       <canvas width="1000" height="1000" ref={canvasEl} className="border" />
 
       <div className="flex flex-wrap items-start justify-center gap-4">
-        <ColorPalette selectedColor={color} onColorChange={changeColor} />
+        <div className="flex flex-col gap-4">
+          <ColorPalette
+            selectedColor={color}
+            onColorChange={changeColor}
+            opacity={opacity}
+            changeOpacity={changeOpacity}
+          />
+        </div>
 
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
