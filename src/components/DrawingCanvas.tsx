@@ -83,6 +83,15 @@ export function DrawingCanvas() {
       return;
     }
     const eraser = new EraserBrush(canvas);
+
+    eraser.on("end", async (e) => {
+      e.preventDefault();
+
+      await eraser.commit(e.detail);
+      setHistories((prev) => ({
+        undo: [...prev.undo, canvas.toJSON()],
+      }));
+    });
     canvas.freeDrawingBrush = eraser;
     canvas.freeDrawingBrush.width = 20;
   };
