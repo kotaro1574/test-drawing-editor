@@ -90,6 +90,7 @@ export function DrawingCanvas() {
       await eraser.commit(e.detail);
       setHistories((prev) => ({
         undo: [...prev.undo, canvas.toJSON()],
+        redo: [],
       }));
     });
     canvas.freeDrawingBrush = eraser;
@@ -98,8 +99,10 @@ export function DrawingCanvas() {
 
   const [histories, setHistories] = useState<{
     undo: object[];
+    redo: object[];
   }>({
     undo: [],
+    redo: [],
   });
 
   const isCanvasLocked = useRef(false);
@@ -112,6 +115,7 @@ export function DrawingCanvas() {
     // 空のcanvasを履歴の初期値に追加
     setHistories({
       undo: [canvas.toJSON()],
+      redo: [],
     });
 
     const onCanvasModified = (e: { target: fabric.FabricObject }) => {
@@ -123,6 +127,7 @@ export function DrawingCanvas() {
       if (targetCanvas) {
         setHistories((prev) => ({
           undo: [...prev.undo, targetCanvas.toJSON()],
+          redo: [],
         }));
       }
     };
@@ -151,10 +156,33 @@ export function DrawingCanvas() {
     canvas.renderAll();
     setHistories((prev) => ({
       undo: prev.undo.slice(0, -1),
+      redo: [...prev.redo, currentHistory],
     }));
 
     isCanvasLocked.current = false;
   }, [canvas, histories.undo]);
+
+  const redo = useCallback(async () => {
+    if (!canvas || isCanvasLocked.current) {
+      return;
+    }
+
+    const lastHistory = histories.redo.at(-1);
+    if (!lastHistory) {
+      return;
+    }
+
+    isCanvasLocked.current = true;
+
+    await canvas.loadFromJSON(lastHistory);
+    canvas.renderAll();
+    setHistories((prev) => ({
+      undo: [...prev.undo, lastHistory],
+      redo: prev.redo.slice(0, -1),
+    }));
+
+    isCanvasLocked.current = false;
+  }, [canvas, histories.redo]);
 
   return (
     <div className="flex flex-col items-center">
@@ -197,6 +225,12 @@ export function DrawingCanvas() {
           className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
         >
           Undo
+        </button>
+        <button
+          onClick={redo}
+          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
+        >
+          Redo
         </button>
       </div>
     </div>
