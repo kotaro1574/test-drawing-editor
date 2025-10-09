@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
 import { EraserBrush } from "@erase2d/fabric";
+import { ColorPalette } from "./ColorPalette";
 
 const DEFAULT_COLOR = "#000000";
 const DEFAULT_WIDTH = 10;
@@ -38,24 +39,14 @@ export function DrawingCanvas() {
     };
   }, []);
 
-  const changeToRed = () => {
+  const changeColor = (newColor: string) => {
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.color = "#ff0000";
+    canvas.freeDrawingBrush.color = newColor;
     canvas.freeDrawingBrush.width = width;
-    setColor("#ff0000");
-  };
-
-  const changeToBlack = () => {
-    if (canvas?.freeDrawingBrush === undefined) {
-      return;
-    }
-    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.color = "#000000";
-    canvas.freeDrawingBrush.width = width;
-    setColor("#000000");
+    setColor(newColor);
   };
 
   const changeToThick = () => {
@@ -185,53 +176,50 @@ export function DrawingCanvas() {
   }, [canvas, histories.redo]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-4 p-4">
       <canvas width="1000" height="1000" ref={canvasEl} className="border" />
 
-      <div className="flex items-center gap-2 mt-4">
-        <button
-          onClick={changeToRed}
-          className="mt-2 px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
-        >
-          Red
-        </button>
-        <button
-          onClick={changeToBlack}
-          className="mt-2 px-4 py-1 bg-black text-white rounded hover:bg-gray-800 cursor-pointer"
-        >
-          Black
-        </button>
-        <button
-          onClick={changeToThick}
-          className="mt-2 px-4 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
-        >
-          Thick
-        </button>
-        <button
-          onClick={changeToThin}
-          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
-        >
-          Thin
-        </button>
-        <button
-          onClick={changeToEraser}
-          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
-        >
-          Eraser
-        </button>
+      <div className="flex flex-wrap items-start justify-center gap-4">
+        <ColorPalette selectedColor={color} onColorChange={changeColor} />
 
-        <button
-          onClick={undo}
-          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
-        >
-          Undo
-        </button>
-        <button
-          onClick={redo}
-          className="mt-2 px-4 py-1 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
-        >
-          Redo
-        </button>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <button
+              onClick={changeToThick}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+            >
+              Thick
+            </button>
+            <button
+              onClick={changeToThin}
+              className="px-4 py-2 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
+            >
+              Thin
+            </button>
+          </div>
+
+          <button
+            onClick={changeToEraser}
+            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 cursor-pointer"
+          >
+            Eraser
+          </button>
+
+          <div className="flex gap-2">
+            <button
+              onClick={undo}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+            >
+              Undo
+            </button>
+            <button
+              onClick={redo}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+            >
+              Redo
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
