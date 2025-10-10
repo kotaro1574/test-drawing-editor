@@ -5,6 +5,8 @@ import {
   DEFAULT_COLOR,
   DEFAULT_OPACITY,
   DEFAULT_WIDTH,
+  DRAW_MODE,
+  DrawMode,
   ERASER_WIDTH,
   THICK_WIDTH,
   THIN_WIDTH,
@@ -29,16 +31,20 @@ export function useBrushSettings(
   const [color, setColor] = useState(DEFAULT_COLOR);
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [opacity, setOpacity] = useState(DEFAULT_OPACITY);
+  const [drawMode, setDrawMode] = useState<DrawMode>(DRAW_MODE.PENCIL);
 
   // 色を変更
   const changeColor = (newColor: string) => {
-    if (canvas?.freeDrawingBrush === undefined) {
+    setColor(newColor);
+    if (
+      canvas?.freeDrawingBrush === undefined ||
+      drawMode !== DRAW_MODE.PENCIL
+    ) {
       return;
     }
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.color = hexToRgba(newColor, opacity);
     canvas.freeDrawingBrush.width = width;
-    setColor(newColor);
   };
 
   // 透明度を変更
@@ -53,6 +59,18 @@ export function useBrushSettings(
     }
   };
 
+  // ペンシルモードに変更
+  const changeToPencil = () => {
+    if (canvas?.freeDrawingBrush === undefined) {
+      return;
+    }
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+    canvas.freeDrawingBrush.width = width;
+    canvas.isDrawingMode = true;
+    setDrawMode(DRAW_MODE.PENCIL);
+  };
+
   // 太いブラシに変更
   const changeToThick = () => {
     if (canvas?.freeDrawingBrush === undefined) {
@@ -61,7 +79,9 @@ export function useBrushSettings(
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = THICK_WIDTH;
     canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+    canvas.isDrawingMode = true;
     setWidth(THICK_WIDTH);
+    setDrawMode(DRAW_MODE.PENCIL);
   };
 
   // 細いブラシに変更
@@ -72,7 +92,9 @@ export function useBrushSettings(
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = THIN_WIDTH;
     canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+    canvas.isDrawingMode = true;
     setWidth(THIN_WIDTH);
+    setDrawMode(DRAW_MODE.PENCIL);
   };
 
   // 消しゴムに変更
@@ -97,16 +119,30 @@ export function useBrushSettings(
 
     canvas.freeDrawingBrush = eraser;
     canvas.freeDrawingBrush.width = ERASER_WIDTH;
+    canvas.isDrawingMode = true;
+    setDrawMode(DRAW_MODE.ERASER);
+  };
+
+  // 図形モードに変更
+  const changeToShape = (shape: DrawMode) => {
+    if (!canvas) {
+      return;
+    }
+    canvas.isDrawingMode = false;
+    setDrawMode(shape);
   };
 
   return {
     color,
     width,
     opacity,
+    drawMode,
     changeColor,
     changeOpacity,
+    changeToPencil,
     changeToThick,
     changeToThin,
     changeToEraser,
+    changeToShape,
   };
 }
