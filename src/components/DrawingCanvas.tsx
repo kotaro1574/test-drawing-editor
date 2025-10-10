@@ -50,7 +50,9 @@ export function DrawingCanvas() {
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <canvas width="1000" height="1000" ref={canvasEl} className="border" />
+      <div className="bg-white">
+        <canvas width="1000" height="1000" ref={canvasEl} className="border" />
+      </div>
 
       <div className="flex flex-wrap items-start justify-center gap-4">
         <div className="flex flex-col gap-4">
