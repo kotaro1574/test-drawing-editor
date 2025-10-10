@@ -48,13 +48,13 @@ export function ColorPalette({
   changeOpacity,
 }: ColorPaletteProps) {
   return (
-    <div className="bg-gray-500 p-4 rounded-lg inline-block">
+    <div className="rounded-lg inline-block">
       <div className="grid grid-cols-3 gap-2 mb-4">
         {COLORS.map((color) => (
           <button
             key={color}
             onClick={() => onColorChange(color)}
-            className={`w-16 h-16 rounded-lg border-4 transition-all cursor-pointer ${
+            className={`w-8 h-8 rounded-lg border-2 transition-all cursor-pointer ${
               selectedColor === color
                 ? "border-yellow-400 scale-95"
                 : "border-gray-700 hover:border-gray-600"

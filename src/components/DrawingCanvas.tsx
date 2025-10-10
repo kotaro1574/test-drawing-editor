@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import * as fabric from "fabric";
 import { EraserBrush } from "@erase2d/fabric";
+import * as fabric from "fabric";
+import { Eraser, Redo, Undo } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ColorPalette } from "./ColorPalette";
 import { Button } from "./ui/button";
-import { Slider } from "./ui/slider";
 
 const DEFAULT_COLOR = "#000000";
 const DEFAULT_WIDTH = 10;
@@ -212,18 +212,22 @@ export function DrawingCanvas() {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <Button onClick={changeToThick}>Thick</Button>
-            <Button onClick={changeToThin}>Thin</Button>
-          </div>
-
-          <Button onClick={changeToEraser}>Eraser</Button>
-
-          <div className="flex gap-2">
-            <Button onClick={undo}>Undo</Button>
-            <Button onClick={redo}>Redo</Button>
-          </div>
+        <div className="flex gap-2">
+          <Button onClick={changeToThick}>
+            <div className="bg-white rounded-full w-5 h-5"></div>
+          </Button>
+          <Button onClick={changeToThin}>
+            <div className="bg-white rounded-full w-[10px] h-[10px]"></div>
+          </Button>
+          <Button onClick={changeToEraser}>
+            <Eraser className="w-4 h-4" />
+          </Button>
+          <Button onClick={undo}>
+            <Undo className="w-4 h-4" />
+          </Button>
+          <Button onClick={redo}>
+            <Redo className="w-4 h-4" />
+          </Button>
         </div>
       </div>
     </div>
