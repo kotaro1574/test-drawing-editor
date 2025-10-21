@@ -47,7 +47,7 @@ export function DrawingCanvas() {
   } = useBrushSettings(canvas, setHistories);
 
   // 図形描画（枠線のみ）
-  useShapeDrawing({ canvas, drawMode, color, opacity });
+  useShapeDrawing({ canvas, drawMode, color, opacity, strokeWidth: width });
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">

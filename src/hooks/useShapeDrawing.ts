@@ -7,6 +7,7 @@ interface UseShapeDrawingProps {
   drawMode: DrawMode;
   color: string;
   opacity: number;
+  strokeWidth: number;
 }
 
 /**
@@ -22,6 +23,7 @@ export function useShapeDrawing({
   drawMode,
   color,
   opacity,
+  strokeWidth,
 }: UseShapeDrawingProps) {
   const isDrawingShape = useRef(false);
   const currentShape = useRef<fabric.FabricObject | null>(null);
@@ -44,7 +46,7 @@ export function useShapeDrawing({
             height: Math.abs(height),
             fill: "transparent", // 塗りつぶしなし
             stroke: strokeColor,
-            strokeWidth: 3,
+            strokeWidth,
             erasable: true,
           });
 
@@ -60,7 +62,7 @@ export function useShapeDrawing({
             ry: Math.abs(height) / 2, // 縦方向の半径
             fill: "transparent", // 塗りつぶしなし
             stroke: strokeColor,
-            strokeWidth: 3,
+            strokeWidth,
             erasable: true,
             originX: "center", // 中心を基準にする
             originY: "center",
@@ -70,7 +72,7 @@ export function useShapeDrawing({
           // 始点から終点まで直線を引く
           return new fabric.Line([left, top, left, top], {
             stroke: strokeColor,
-            strokeWidth: 3,
+            strokeWidth,
             erasable: true,
           });
 
@@ -78,7 +80,7 @@ export function useShapeDrawing({
           return null;
       }
     },
-    [drawMode, color, opacity]
+    [drawMode, color, opacity, strokeWidth]
   );
 
   // マウスダウン時の処理
