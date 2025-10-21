@@ -76,6 +76,17 @@ export function useBrushSettings(
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+
+    if (drawMode === DRAW_MODE.ERASER) {
+      canvas.freeDrawingBrush = new EraserBrush(canvas);
+      canvas.freeDrawingBrush.width = THICK_WIDTH;
+      canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+      canvas.isDrawingMode = true;
+      setDrawMode(DRAW_MODE.ERASER);
+      setWidth(THICK_WIDTH);
+      return;
+    }
+
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = THICK_WIDTH;
     canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
@@ -89,6 +100,17 @@ export function useBrushSettings(
     if (canvas?.freeDrawingBrush === undefined) {
       return;
     }
+
+    if (drawMode === DRAW_MODE.ERASER) {
+      canvas.freeDrawingBrush = new EraserBrush(canvas);
+      canvas.freeDrawingBrush.width = THIN_WIDTH;
+      canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+      canvas.isDrawingMode = true;
+      setWidth(THIN_WIDTH);
+      setDrawMode(DRAW_MODE.ERASER);
+      return;
+    }
+
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
     canvas.freeDrawingBrush.width = THIN_WIDTH;
     canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
@@ -118,7 +140,7 @@ export function useBrushSettings(
     });
 
     canvas.freeDrawingBrush = eraser;
-    canvas.freeDrawingBrush.width = ERASER_WIDTH;
+    canvas.freeDrawingBrush.width = width;
     canvas.isDrawingMode = true;
     setDrawMode(DRAW_MODE.ERASER);
   };
