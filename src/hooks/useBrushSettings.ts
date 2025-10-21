@@ -59,6 +59,29 @@ export function useBrushSettings(
     }
   };
 
+  // ブラシの幅を変更するヘルパー関数
+  const changeBrushWidth = (newWidth: number) => {
+    if (canvas?.freeDrawingBrush === undefined) {
+      return;
+    }
+
+    // 消しゴムモードの場合
+    if (drawMode === DRAW_MODE.ERASER) {
+      canvas.freeDrawingBrush = new EraserBrush(canvas);
+      canvas.freeDrawingBrush.width = newWidth;
+      canvas.isDrawingMode = true;
+      setWidth(newWidth);
+      return;
+    }
+
+    // ペンシルモードの場合
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+    canvas.freeDrawingBrush.width = newWidth;
+    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
+    canvas.isDrawingMode = true;
+    setWidth(newWidth);
+  };
+
   // ペンシルモードに変更
   const changeToPencil = () => {
     if (canvas?.freeDrawingBrush === undefined) {
@@ -73,50 +96,12 @@ export function useBrushSettings(
 
   // 太いブラシに変更
   const changeToThick = () => {
-    if (canvas?.freeDrawingBrush === undefined) {
-      return;
-    }
-
-    if (drawMode === DRAW_MODE.ERASER) {
-      canvas.freeDrawingBrush = new EraserBrush(canvas);
-      canvas.freeDrawingBrush.width = THICK_WIDTH;
-      canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
-      canvas.isDrawingMode = true;
-      setDrawMode(DRAW_MODE.ERASER);
-      setWidth(THICK_WIDTH);
-      return;
-    }
-
-    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.width = THICK_WIDTH;
-    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
-    canvas.isDrawingMode = true;
-    setWidth(THICK_WIDTH);
-    setDrawMode(DRAW_MODE.PENCIL);
+    changeBrushWidth(THICK_WIDTH);
   };
 
   // 細いブラシに変更
   const changeToThin = () => {
-    if (canvas?.freeDrawingBrush === undefined) {
-      return;
-    }
-
-    if (drawMode === DRAW_MODE.ERASER) {
-      canvas.freeDrawingBrush = new EraserBrush(canvas);
-      canvas.freeDrawingBrush.width = THIN_WIDTH;
-      canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
-      canvas.isDrawingMode = true;
-      setWidth(THIN_WIDTH);
-      setDrawMode(DRAW_MODE.ERASER);
-      return;
-    }
-
-    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-    canvas.freeDrawingBrush.width = THIN_WIDTH;
-    canvas.freeDrawingBrush.color = hexToRgba(color, opacity);
-    canvas.isDrawingMode = true;
-    setWidth(THIN_WIDTH);
-    setDrawMode(DRAW_MODE.PENCIL);
+    changeBrushWidth(THIN_WIDTH);
   };
 
   // 消しゴムに変更
