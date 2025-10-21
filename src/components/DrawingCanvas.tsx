@@ -14,7 +14,7 @@ import { useDrawingCanvas } from "@/hooks/useDrawingCanvas";
 import { useDrawingHistory } from "@/hooks/useDrawingHistory";
 import { useBrushSettings } from "@/hooks/useBrushSettings";
 import { useShapeDrawing } from "@/hooks/useShapeDrawing";
-import { DRAW_MODE } from "@/lib/drawingConstants";
+import { DRAW_MODE, THICK_WIDTH, THIN_WIDTH } from "@/lib/drawingConstants";
 import { ColorPalette } from "./ColorPalette";
 import { Button } from "./ui/button";
 
@@ -36,6 +36,7 @@ export function DrawingCanvas() {
     color,
     opacity,
     drawMode,
+    width,
     changeColor,
     changeOpacity,
     changeToPencil,
@@ -72,12 +73,7 @@ export function DrawingCanvas() {
             >
               <Pencil className="w-4 h-4" />
             </Button>
-            <Button onClick={changeToThick}>
-              <div className="bg-white rounded-full w-5 h-5"></div>
-            </Button>
-            <Button onClick={changeToThin}>
-              <div className="bg-white rounded-full w-[10px] h-[10px]"></div>
-            </Button>
+
             <Button
               onClick={changeToEraser}
               variant={drawMode === DRAW_MODE.ERASER ? "default" : "outline"}
@@ -104,6 +100,29 @@ export function DrawingCanvas() {
               variant={drawMode === DRAW_MODE.LINE ? "default" : "outline"}
             >
               <Minus className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              onClick={changeToThick}
+              variant={width === THICK_WIDTH ? "default" : "outline"}
+            >
+              <div
+                className={`${
+                  width === THICK_WIDTH ? "bg-white" : "bg-black"
+                } rounded-full w-5 h-5`}
+              ></div>
+            </Button>
+            <Button
+              onClick={changeToThin}
+              variant={width === THIN_WIDTH ? "default" : "outline"}
+            >
+              <div
+                className={`${
+                  width === THIN_WIDTH ? "bg-white" : "bg-black"
+                } rounded-full w-[10px] h-[10px]`}
+              ></div>
             </Button>
           </div>
 
