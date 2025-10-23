@@ -36,6 +36,11 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
         return;
       }
 
+      // 描画中の図形（_isDrawingフラグが付いている）は履歴に保存しない
+      if ((e.target as any)._isDrawing) {
+        return;
+      }
+
       const targetCanvas = e.target.canvas;
       if (targetCanvas) {
         setHistories((prev) => ({

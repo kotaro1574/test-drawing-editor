@@ -98,9 +98,10 @@ export function useShapeDrawing({
       const pointer = event.scenePoint;
       startPoint.current = { x: pointer.x, y: pointer.y };
 
-      // 初期図形を作成
+      // 初期図形を作成（描画中フラグを付けて履歴保存をスキップ）
       const shape = createShape(pointer.x, pointer.y, 0, 0);
       if (shape) {
+        (shape as any)._isDrawing = true;
         currentShape.current = shape;
         canvas.add(shape);
       }
@@ -160,9 +161,15 @@ export function useShapeDrawing({
 
   // マウスアップ時の処理
   const handleMouseUp = useCallback(() => {
-    if (!canvas || !isDrawingShape.current) {
+    if (!canvas || !isDrawingShape.current || !currentShape.current) {
       return;
     }
+
+    // 描画中フラグを削除して、図形を削除→再追加することで最終的な状態で履歴に保存
+    const shape = currentShape.current;
+    delete (shape as any)._isDrawing;
+    canvas.remove(shape);
+    canvas.add(shape);
 
     isDrawingShape.current = false;
     currentShape.current = null;
