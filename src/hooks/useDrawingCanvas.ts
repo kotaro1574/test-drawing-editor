@@ -26,9 +26,10 @@ export function useDrawingCanvas(
     fabricCanvas.freeDrawingBrush = pencil;
     fabricCanvas.isDrawingMode = true;
 
-    // 消しゴムで線を消せるようにするため
+    // 消しゴムで線を消せるようにし、選択できないようにする
     fabricCanvas.on("object:added", (e) => {
       e.target.erasable = true;
+      e.target.selectable = false;
     });
 
     setCanvas(fabricCanvas);
