@@ -12,6 +12,7 @@ export const DRAW_MODE = {
   RECTANGLE: "rectangle",
   CIRCLE: "circle",
   LINE: "line",
+  FILL: "fill", // 塗りつぶしツール
 } as const;
 
 export type DrawMode = (typeof DRAW_MODE)[keyof typeof DRAW_MODE];

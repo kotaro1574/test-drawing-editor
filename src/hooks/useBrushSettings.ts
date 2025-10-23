@@ -139,6 +139,15 @@ export function useBrushSettings(
     setDrawMode(shape);
   };
 
+  // 塗りつぶしモードに変更
+  const changeToFill = () => {
+    if (!canvas) {
+      return;
+    }
+    canvas.isDrawingMode = false;
+    setDrawMode(DRAW_MODE.FILL);
+  };
+
   return {
     color,
     width,
@@ -151,5 +160,6 @@ export function useBrushSettings(
     changeToThin,
     changeToEraser,
     changeToShape,
+    changeToFill,
   };
 }

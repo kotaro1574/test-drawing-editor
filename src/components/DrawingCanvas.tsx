@@ -4,6 +4,7 @@ import {
   Circle,
   Eraser,
   Minus,
+  PaintBucket,
   Pencil,
   Redo,
   Square,
@@ -14,6 +15,7 @@ import { useDrawingCanvas } from "@/hooks/useDrawingCanvas";
 import { useDrawingHistory } from "@/hooks/useDrawingHistory";
 import { useBrushSettings } from "@/hooks/useBrushSettings";
 import { useShapeDrawing } from "@/hooks/useShapeDrawing";
+import { useFillTool } from "@/hooks/useFillTool";
 import { DRAW_MODE, THICK_WIDTH, THIN_WIDTH } from "@/lib/drawingConstants";
 import { ColorPalette } from "./ColorPalette";
 import { Button } from "./ui/button";
@@ -44,10 +46,14 @@ export function DrawingCanvas() {
     changeToThin,
     changeToEraser,
     changeToShape,
+    changeToFill,
   } = useBrushSettings(canvas, setHistories);
 
   // 図形描画（枠線のみ）
   useShapeDrawing({ canvas, drawMode, color, opacity, strokeWidth: width });
+
+  // 塗りつぶしツール
+  useFillTool({ canvas, drawMode, color, opacity });
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
@@ -79,6 +85,13 @@ export function DrawingCanvas() {
               variant={drawMode === DRAW_MODE.ERASER ? "default" : "outline"}
             >
               <Eraser className="w-4 h-4" />
+            </Button>
+
+            <Button
+              onClick={changeToFill}
+              variant={drawMode === DRAW_MODE.FILL ? "default" : "outline"}
+            >
+              <PaintBucket className="w-4 h-4" />
             </Button>
           </div>
 
