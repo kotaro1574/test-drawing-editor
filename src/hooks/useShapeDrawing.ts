@@ -165,11 +165,27 @@ export function useShapeDrawing({
       return;
     }
 
-    // 描画中フラグを削除して、図形を削除→再追加することで最終的な状態で履歴に保存
     const shape = currentShape.current;
+
+    // 図形のサイズをチェック（サイズが0の場合は履歴に保存しない）
+    let hasSize = false;
+    if (shape instanceof fabric.Rect) {
+      hasSize = (shape.width ?? 0) > 1 && (shape.height ?? 0) > 1;
+    } else if (shape instanceof fabric.Ellipse) {
+      hasSize = (shape.rx ?? 0) > 1 && (shape.ry ?? 0) > 1;
+    } else if (shape instanceof fabric.Line) {
+      const dx = (shape.x2 ?? 0) - (shape.x1 ?? 0);
+      const dy = (shape.y2 ?? 0) - (shape.y1 ?? 0);
+      hasSize = Math.sqrt(dx * dx + dy * dy) > 1;
+    }
+
     delete (shape as any)._isDrawing;
     canvas.remove(shape);
-    canvas.add(shape);
+
+    // サイズがある場合のみ再追加して履歴に保存
+    if (hasSize) {
+      canvas.add(shape);
+    }
 
     isDrawingShape.current = false;
     currentShape.current = null;
