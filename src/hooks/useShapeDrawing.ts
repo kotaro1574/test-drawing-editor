@@ -95,7 +95,7 @@ export function useShapeDrawing({
       }
 
       isDrawingShape.current = true;
-      const pointer = canvas.getPointer(event.e);
+      const pointer = event.scenePoint;
       startPoint.current = { x: pointer.x, y: pointer.y };
 
       // 初期図形を作成
@@ -120,7 +120,7 @@ export function useShapeDrawing({
         return;
       }
 
-      const pointer = canvas.getPointer(event.e);
+      const pointer = event.scenePoint;
       const width = pointer.x - startPoint.current.x;
       const height = pointer.y - startPoint.current.y;
 
