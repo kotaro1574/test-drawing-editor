@@ -56,9 +56,9 @@ export function DrawingCanvas() {
   useFillTool({ canvas, drawMode, color, opacity });
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
+    <div className="flex flex-col items-center gap-4 p-4">
       <div className="bg-white">
-        <canvas ref={canvasEl} className="border" />
+        <canvas width="1000" height="1000" ref={canvasEl} className="border" />
       </div>
 
       <div className="flex flex-wrap items-start justify-center gap-4">
