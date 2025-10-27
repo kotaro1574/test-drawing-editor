@@ -61,7 +61,7 @@ export function useFillTool({
 
       // Fabric.jsのオブジェクトとして保存するため、画像を作成
       const dataURL = canvasElement.toDataURL();
-      fabric.Image.fromURL(dataURL).then((img) => {
+      fabric.FabricImage.fromURL(dataURL).then((img) => {
         // 既存のオブジェクトを全てクリア
         canvas.clear();
 
