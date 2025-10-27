@@ -72,11 +72,8 @@ export function useFillTool({
           selectable: false,
           erasable: true,
         });
-        canvas.add(img);
+        canvas.add(img); // canvas.addで自動的にobject:addedが発火して履歴に保存される
         canvas.renderAll();
-
-        // object:addedイベントを発火させて履歴に保存
-        canvas.fire("object:added", { target: img });
       });
     },
     [canvas, drawMode, color, opacity]
