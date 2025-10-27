@@ -39,6 +39,7 @@ export function useDrawingCanvas(
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: canvasSize,
       height: canvasSize,
+      enableRetinaScaling: false, // Retinaディスプレイの自動スケーリングを無効化
     });
 
     // 手書き機能を追加
