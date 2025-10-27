@@ -2,6 +2,7 @@
 
 import {
   Circle,
+  Download,
   Eraser,
   Minus,
   PaintBucket,
@@ -54,6 +55,27 @@ export function DrawingCanvas() {
 
   // 塗りつぶしツール
   useFillTool({ canvas, drawMode, color, opacity });
+
+  // 画像としてダウンロード
+  const downloadImage = () => {
+    if (!canvas) return;
+
+    // canvasの内容をDataURLとして取得
+    const dataURL = canvas.toDataURL({
+      format: "png",
+      quality: 1,
+      multiplier: 1,
+    });
+
+    // ダウンロードリンクを作成
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    link.download = `drawing-${timestamp}.png`;
+    link.href = dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
@@ -145,6 +167,17 @@ export function DrawingCanvas() {
             </Button>
             <Button onClick={redo}>
               <Redo className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              onClick={downloadImage}
+              variant="default"
+              className="w-full"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              画像を保存
             </Button>
           </div>
         </div>
