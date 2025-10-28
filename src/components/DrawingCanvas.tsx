@@ -162,11 +162,19 @@ export function DrawingCanvas() {
           </div>
 
           <div className="flex gap-2">
-            <Button onClick={undo}>
-              <Undo className="w-4 h-4" />
+            <Button
+              onClick={undo}
+              className="active:scale-95 active:bg-gray-700 transition-transform touch-manipulation"
+              size="lg"
+            >
+              <Undo className="w-6 h-6" />
             </Button>
-            <Button onClick={redo}>
-              <Redo className="w-4 h-4" />
+            <Button
+              onClick={redo}
+              className="active:scale-95 active:bg-gray-700 transition-transform touch-manipulation"
+              size="lg"
+            >
+              <Redo className="w-6 h-6" />
             </Button>
           </div>
 
