@@ -71,21 +71,14 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
 
     isCanvasLocked.current = true;
 
-    try {
-      await canvas.loadFromJSON(lastHistory);
-      canvas.renderAll();
+    await canvas.loadFromJSON(lastHistory);
+    canvas.renderAll();
+    setHistories((prev) => ({
+      undo: prev.undo.slice(0, -1),
+      redo: [...prev.redo, currentHistory],
+    }));
 
-      // ステート更新を待ってからロック解除
-      setHistories((prev) => ({
-        undo: prev.undo.slice(0, -1),
-        redo: [...prev.redo, currentHistory],
-      }));
-
-      // レンダリング完了を確実に待つ
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    } finally {
-      isCanvasLocked.current = false;
-    }
+    isCanvasLocked.current = false;
   }, [canvas, histories.undo]);
 
   // Redo実行
@@ -101,21 +94,14 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
 
     isCanvasLocked.current = true;
 
-    try {
-      await canvas.loadFromJSON(lastHistory);
-      canvas.renderAll();
+    await canvas.loadFromJSON(lastHistory);
+    canvas.renderAll();
+    setHistories((prev) => ({
+      undo: [...prev.undo, lastHistory],
+      redo: prev.redo.slice(0, -1),
+    }));
 
-      // ステート更新を待ってからロック解除
-      setHistories((prev) => ({
-        undo: [...prev.undo, lastHistory],
-        redo: prev.redo.slice(0, -1),
-      }));
-
-      // レンダリング完了を確実に待つ
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    } finally {
-      isCanvasLocked.current = false;
-    }
+    isCanvasLocked.current = false;
   }, [canvas, histories.redo]);
 
   return {
