@@ -7,7 +7,9 @@ interface DrawingHistories {
 }
 
 /**
- * 描画履歴（Undo/Redo）を管理するカスタムフック
+ * 描画履歴（Undo/Redo）を管理するカスタムフック（改善版）
+ * - object:added, object:modified, object:removed イベントを監視
+ * - デバウンス処理で過剰な履歴保存を防ぐ
  * @param canvas - fabric.Canvasインスタンス
  * @returns 履歴状態とUndo/Redo関数
  */
@@ -18,6 +20,7 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
   });
 
   const isCanvasLocked = useRef(false);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Canvas初期化時に空の履歴を追加
   useEffect(() => {
@@ -31,29 +34,65 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
       redo: [],
     });
 
-    const onCanvasModified = (e: { target: fabric.FabricObject }) => {
+    // 履歴を保存する関数（デバウンス付き）
+    const saveHistory = () => {
       if (isCanvasLocked.current) {
         return;
       }
 
+      // 既存のタイムアウトをクリア
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+
+      // デバウンス: 100ms後に保存
+      saveTimeoutRef.current = setTimeout(() => {
+        setHistories((prev) => ({
+          undo: [...prev.undo, canvas.toJSON()],
+          redo: [],
+        }));
+      }, 100);
+    };
+
+    // オブジェクト追加時
+    const onObjectAdded = (e: { target: fabric.FabricObject }) => {
       // 描画中の図形（_isDrawingフラグが付いている）は履歴に保存しない
       if ((e.target as any)._isDrawing) {
         return;
       }
-
-      const targetCanvas = e.target.canvas;
-      if (targetCanvas) {
-        setHistories((prev) => ({
-          undo: [...prev.undo, targetCanvas.toJSON()],
-          redo: [],
-        }));
-      }
+      saveHistory();
     };
 
-    canvas.on("object:added", onCanvasModified);
+    // オブジェクト変更時
+    const onObjectModified = () => {
+      saveHistory();
+    };
+
+    // オブジェクト削除時
+    const onObjectRemoved = () => {
+      saveHistory();
+    };
+
+    // パス作成時（フリーハンド描画完了時）
+    const onPathCreated = () => {
+      saveHistory();
+    };
+
+    canvas.on("object:added", onObjectAdded);
+    canvas.on("object:modified", onObjectModified);
+    canvas.on("object:removed", onObjectRemoved);
+    canvas.on("path:created", onPathCreated);
 
     return () => {
-      canvas.off("object:added", onCanvasModified);
+      canvas.off("object:added", onObjectAdded);
+      canvas.off("object:modified", onObjectModified);
+      canvas.off("object:removed", onObjectRemoved);
+      canvas.off("path:created", onPathCreated);
+
+      // タイムアウトをクリア
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
     };
   }, [canvas]);
 
@@ -70,6 +109,11 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
     }
 
     isCanvasLocked.current = true;
+
+    // デバウンスのタイムアウトをクリア
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
 
     await canvas.loadFromJSON(lastHistory);
     canvas.renderAll();
@@ -93,6 +137,11 @@ export function useDrawingHistory(canvas: fabric.Canvas | null) {
     }
 
     isCanvasLocked.current = true;
+
+    // デバウンスのタイムアウトをクリア
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
 
     await canvas.loadFromJSON(lastHistory);
     canvas.renderAll();
