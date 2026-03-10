@@ -1,0 +1,25 @@
+import { NextResponse } from "next/server";
+import { getDrawing } from "@/lib/r2";
+
+type Params = { params: Promise<{ id: string }> };
+
+export async function GET(_request: Request, { params }: Params) {
+  const { id } = await params;
+
+  if (!/^[\w-]+$/.test(id)) {
+    return new NextResponse("Bad Request", { status: 400 });
+  }
+
+  const data = await getDrawing(id);
+
+  if (!data) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
+  return new NextResponse(new Uint8Array(data), {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
+}

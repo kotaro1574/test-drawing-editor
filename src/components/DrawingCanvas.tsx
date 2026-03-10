@@ -8,10 +8,11 @@ import {
   PaintBucket,
   Pencil,
   Redo,
+  Share2,
   Square,
   Undo,
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDrawingCanvas } from "@/hooks/useDrawingCanvas";
 import { useDrawingHistory } from "@/hooks/useDrawingHistory";
 import { useBrushSettings } from "@/hooks/useBrushSettings";
@@ -56,18 +57,17 @@ export function DrawingCanvas() {
   // 塗りつぶしツール
   useFillTool({ canvas, drawMode, color, opacity });
 
-  // 画像としてダウンロード
+  const [isSharing, setIsSharing] = useState(false);
+
   const downloadImage = () => {
     if (!canvas) return;
 
-    // canvasの内容をDataURLとして取得
     const dataURL = canvas.toDataURL({
       format: "png",
       quality: 1,
       multiplier: 1,
     });
 
-    // ダウンロードリンクを作成
     const link = document.createElement("a");
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     link.download = `drawing-${timestamp}.png`;
@@ -75,6 +75,37 @@ export function DrawingCanvas() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const shareToX = async () => {
+    if (!canvas || isSharing) return;
+
+    setIsSharing(true);
+    try {
+      const dataURL = canvas.toDataURL({
+        format: "png",
+        quality: 1,
+        multiplier: 1,
+      });
+
+      const response = await fetch("/api/drawings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataURL }),
+      });
+
+      const { id } = (await response.json()) as { id: string };
+
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+      const shareUrl = `${baseUrl}/share/${id}`;
+      const text = "絵を描いたよ！";
+      const xIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+
+      window.open(xIntentUrl, "_blank");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   return (
@@ -186,6 +217,18 @@ export function DrawingCanvas() {
             >
               <Download className="w-4 h-4 mr-2" />
               画像を保存
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              onClick={shareToX}
+              variant="default"
+              className="w-full"
+              disabled={isSharing}
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              {isSharing ? "共有中..." : "Xでシェア"}
             </Button>
           </div>
         </div>
