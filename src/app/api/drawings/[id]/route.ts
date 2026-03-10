@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getDrawing } from "@/lib/r2";
 
+export const runtime = "edge";
+
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, { params }: Params) {

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { uploadDrawing } from "@/lib/r2";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   const { image } = (await request.json()) as { image: string };
 

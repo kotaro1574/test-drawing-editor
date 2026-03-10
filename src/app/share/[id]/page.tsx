@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { drawingExists } from "@/lib/r2";
 
+export const runtime = "edge";
+
 type Props = {
   params: Promise<{ id: string }>;
 };
