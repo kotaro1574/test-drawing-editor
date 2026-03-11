@@ -57,9 +57,14 @@ export default async function SharePage({ params }: Props) {
           height={1000}
         />
       </div>
-      <Link href="/" className="mt-4">
-        <Button size="lg">自分も描いてみる！</Button>
-      </Link>
+      <div className="flex gap-4 mt-4">
+        <Link href="/">
+          <Button size="lg">自分も描いてみる！</Button>
+        </Link>
+        <Link href="/gallery">
+          <Button size="lg" variant="outline">みんなの絵を見る</Button>
+        </Link>
+      </div>
     </main>
   );
 }

@@ -1,51 +1,26 @@
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  HeadObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3mini } from "s3mini";
 
-let _r2Client: S3Client | null = null;
+const s3 = new S3mini({
+  accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
+  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${process.env.R2_BUCKET_NAME}`,
+  region: "auto",
+});
 
-function r2Client(): S3Client {
-  if (!_r2Client) {
-    _r2Client = new S3Client({
-      region: "auto",
-      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-      },
-    });
-  }
-  return _r2Client;
+export type DrawingItem = {
+  id: string;
+  lastModified: Date;
+};
+
+export async function uploadDrawing(id: string, buffer: Buffer): Promise<void> {
+  await s3.putObject(`drawings/${id}.png`, buffer, "image/png");
 }
 
-export async function uploadDrawing(
-  id: string,
-  buffer: Buffer
-): Promise<void> {
-  await r2Client().send(
-    new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME ?? "",
-      Key: `drawings/${id}.png`,
-      Body: buffer,
-      ContentType: "image/png",
-    })
-  );
-}
-
-export async function getDrawing(id: string): Promise<Buffer | null> {
+export async function getDrawing(id: string): Promise<Uint8Array | null> {
   try {
-    const result = await r2Client().send(
-      new GetObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME ?? "",
-        Key: `drawings/${id}.png`,
-      })
-    );
-    return result.Body
-      ? Buffer.from(await result.Body.transformToByteArray())
-      : null;
+    const result = await s3.getObjectArrayBuffer(`drawings/${id}.png`);
+    if (result === null) return null;
+    return new Uint8Array(result);
   } catch {
     return null;
   }
@@ -53,14 +28,23 @@ export async function getDrawing(id: string): Promise<Buffer | null> {
 
 export async function drawingExists(id: string): Promise<boolean> {
   try {
-    await r2Client().send(
-      new HeadObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME ?? "",
-        Key: `drawings/${id}.png`,
-      })
-    );
+    await s3.getObject(`drawings/${id}.png`);
     return true;
   } catch {
     return false;
   }
+}
+
+export async function listDrawings(): Promise<DrawingItem[]> {
+  const result = await s3.listObjects("/", "drawings/", 100);
+
+  if (!result) return [];
+
+  return result
+    .filter((obj) => (obj as any).Key.endsWith(".png"))
+    .map((obj) => ({
+      id: (obj as any).Key.replace("drawings/", "").replace(".png", ""),
+      lastModified: new Date((obj as any).LastModified),
+    }))
+    .sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
 }

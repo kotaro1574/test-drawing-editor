@@ -18,7 +18,7 @@ export async function GET(_request: Request, { params }: Params) {
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  return new NextResponse(new Uint8Array(data), {
+  return new NextResponse(data as any, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",
