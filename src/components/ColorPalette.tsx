@@ -56,8 +56,8 @@ export function ColorPalette({
             onClick={() => onColorChange(color)}
             className={`w-8 h-8 rounded-lg border-2 transition-all cursor-pointer ${
               selectedColor === color
-                ? "border-yellow-400 scale-95"
-                : "border-gray-700 hover:border-gray-600"
+                ? "border-violet-500 scale-110 shadow-lg ring-2 ring-violet-300"
+                : "border-gray-200 hover:border-gray-400 hover:shadow-md"
             }`}
             style={{ backgroundColor: color }}
             aria-label={`色を${color}に変更`}
