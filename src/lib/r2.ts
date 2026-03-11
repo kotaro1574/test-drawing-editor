@@ -5,24 +5,29 @@ import {
   HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 
-const r2Client = new S3Client({
-  region: "auto",
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-  },
-});
+let _r2Client: S3Client | null = null;
 
-const BUCKET_NAME = process.env.R2_BUCKET_NAME ?? "";
+function r2Client(): S3Client {
+  if (!_r2Client) {
+    _r2Client = new S3Client({
+      region: "auto",
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
+      },
+    });
+  }
+  return _r2Client;
+}
 
 export async function uploadDrawing(
   id: string,
   buffer: Buffer
 ): Promise<void> {
-  await r2Client.send(
+  await r2Client().send(
     new PutObjectCommand({
-      Bucket: BUCKET_NAME,
+      Bucket: process.env.R2_BUCKET_NAME ?? "",
       Key: `drawings/${id}.png`,
       Body: buffer,
       ContentType: "image/png",
@@ -32,9 +37,9 @@ export async function uploadDrawing(
 
 export async function getDrawing(id: string): Promise<Buffer | null> {
   try {
-    const result = await r2Client.send(
+    const result = await r2Client().send(
       new GetObjectCommand({
-        Bucket: BUCKET_NAME,
+        Bucket: process.env.R2_BUCKET_NAME ?? "",
         Key: `drawings/${id}.png`,
       })
     );
@@ -48,9 +53,9 @@ export async function getDrawing(id: string): Promise<Buffer | null> {
 
 export async function drawingExists(id: string): Promise<boolean> {
   try {
-    await r2Client.send(
+    await r2Client().send(
       new HeadObjectCommand({
-        Bucket: BUCKET_NAME,
+        Bucket: process.env.R2_BUCKET_NAME ?? "",
         Key: `drawings/${id}.png`,
       })
     );

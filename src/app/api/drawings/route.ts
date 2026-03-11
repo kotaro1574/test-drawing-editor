@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { uploadDrawing } from "@/lib/r2";
 
 export const runtime = "edge";
@@ -10,7 +9,7 @@ export async function POST(request: Request) {
   const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
 
-  const id = crypto.randomUUID();
+  const id = globalThis.crypto.randomUUID();
 
   await uploadDrawing(id, buffer);
 
