@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  htmlLimitedBots: /Googlebot|Mediapartners-Google|AdsBot-Google|Google-PageRenderer|Bingbot|BingPreview|Slackbot|Twitterbot|facebookexternalhit|line-poker|LinkedInBot|Discordbot|WhatsApp|Applebot/,
 };
 
 export default nextConfig;
