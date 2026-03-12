@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { drawingExists } from "@/lib/r2";
 
 export const runtime = "edge";
@@ -46,24 +44,18 @@ export default async function SharePage({ params }: Props) {
   }
 
   return (
-    <main className="flex bg-blue-500 min-h-screen flex-col items-center justify-center py-4">
-      <h1 className="text-2xl font-bold mb-4">みんなの絵を見てね！</h1>
-      <div className="bg-white">
-        <img
-          src={`/api/drawings/${id}`}
-          alt="描いた絵"
-          className="max-w-full h-auto"
-          width={1000}
-          height={1000}
-        />
-      </div>
-      <div className="flex gap-4 mt-4">
-        <Link href="/">
-          <Button size="lg">自分も描いてみる！</Button>
-        </Link>
-        <Link href="/gallery">
-          <Button size="lg" variant="outline">みんなの絵を見る</Button>
-        </Link>
+    <main className="min-h-screen py-8 px-4">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">みんなの絵を見てね！</h1>
+        <div className="glass-card rounded-2xl overflow-hidden p-2">
+          <img
+            src={`/api/drawings/${id}`}
+            alt="描いた絵"
+            className="w-full h-auto rounded-xl"
+            width={1000}
+            height={1000}
+          />
+        </div>
       </div>
     </main>
   );
