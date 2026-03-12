@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { DEFAULT_COLOR, DEFAULT_WIDTH } from "@/lib/drawingConstants";
 
 const MAX_CANVAS_SIZE = 1000;
+const MIN_CANVAS_SIZE = 280;
+const HORIZONTAL_PADDING = 48;
+const VERTICAL_OVERHEAD = 300;
 
 /**
  * Canvas初期化とセットアップを管理するカスタムフック
@@ -21,11 +24,12 @@ export function useDrawingCanvas(
 
     // 画面幅を取得してキャンバスサイズを決定
     const getCanvasSize = () => {
-      const screenWidth = window.innerWidth;
-      // 画面幅が1000px以上なら1000px、未満なら画面幅
-      const size =
-        screenWidth >= MAX_CANVAS_SIZE ? MAX_CANVAS_SIZE : screenWidth;
-      return size;
+      const maxWidth = window.innerWidth - HORIZONTAL_PADDING;
+      const maxHeight = window.innerHeight - VERTICAL_OVERHEAD;
+      return Math.max(
+        Math.min(maxWidth, maxHeight, MAX_CANVAS_SIZE),
+        MIN_CANVAS_SIZE,
+      );
     };
 
     const canvasSize = getCanvasSize();

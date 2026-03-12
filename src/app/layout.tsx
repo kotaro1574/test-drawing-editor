@@ -14,8 +14,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Drawing Editor",
-  description: "Drawing Editor",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000",
+  ),
+  title: "お絵描きエディター",
+  description: "ブラウザで簡単にお絵描きできるエディター",
+  openGraph: {
+    type: "website",
+    siteName: "お絵描きエディター",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary",
+  },
 };
 
 export default function RootLayout({
