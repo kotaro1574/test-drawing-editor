@@ -111,7 +111,7 @@ export function DrawingCanvas() {
   return (
     <div className="flex flex-col items-center gap-6 w-full">
       <div className="glass-card rounded-2xl p-2">
-        <canvas ref={canvasEl} className="rounded-xl bg-white" />
+        <canvas ref={canvasEl} className="rounded-xl" />
       </div>
 
       <div className="flex flex-wrap items-start justify-center gap-4">
@@ -129,7 +129,11 @@ export function DrawingCanvas() {
             <Button
               onClick={changeToPencil}
               variant={drawMode === DRAW_MODE.PENCIL ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.PENCIL ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.PENCIL
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <Pencil className="w-4 h-4" />
             </Button>
@@ -137,7 +141,11 @@ export function DrawingCanvas() {
             <Button
               onClick={changeToEraser}
               variant={drawMode === DRAW_MODE.ERASER ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.ERASER ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.ERASER
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <Eraser className="w-4 h-4" />
             </Button>
@@ -145,7 +153,11 @@ export function DrawingCanvas() {
             <Button
               onClick={changeToFill}
               variant={drawMode === DRAW_MODE.FILL ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.FILL ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.FILL
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <PaintBucket className="w-4 h-4" />
             </Button>
@@ -155,21 +167,33 @@ export function DrawingCanvas() {
             <Button
               onClick={() => changeToShape(DRAW_MODE.RECTANGLE)}
               variant={drawMode === DRAW_MODE.RECTANGLE ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.RECTANGLE ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.RECTANGLE
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <Square className="w-4 h-4" />
             </Button>
             <Button
               onClick={() => changeToShape(DRAW_MODE.CIRCLE)}
               variant={drawMode === DRAW_MODE.CIRCLE ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.CIRCLE ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.CIRCLE
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <Circle className="w-4 h-4" />
             </Button>
             <Button
               onClick={() => changeToShape(DRAW_MODE.LINE)}
               variant={drawMode === DRAW_MODE.LINE ? "default" : "ghost"}
-              className={drawMode === DRAW_MODE.LINE ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                drawMode === DRAW_MODE.LINE
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <Minus className="w-4 h-4" />
             </Button>
@@ -179,7 +203,11 @@ export function DrawingCanvas() {
             <Button
               onClick={changeToThick}
               variant={width === THICK_WIDTH ? "default" : "ghost"}
-              className={width === THICK_WIDTH ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                width === THICK_WIDTH
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <div
                 className={`${
@@ -190,7 +218,11 @@ export function DrawingCanvas() {
             <Button
               onClick={changeToThin}
               variant={width === THIN_WIDTH ? "default" : "ghost"}
-              className={width === THIN_WIDTH ? "bg-violet-500 text-white hover:bg-violet-600" : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"}
+              className={
+                width === THIN_WIDTH
+                  ? "bg-violet-500 text-white hover:bg-violet-600"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              }
             >
               <div
                 className={`${

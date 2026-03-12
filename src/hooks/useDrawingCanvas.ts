@@ -10,7 +10,7 @@ const MAX_CANVAS_SIZE = 1000;
  * @returns fabric.Canvasインスタンス
  */
 export function useDrawingCanvas(
-  canvasRef: React.RefObject<HTMLCanvasElement | null>
+  canvasRef: React.RefObject<HTMLCanvasElement | null>,
 ) {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 
@@ -39,7 +39,8 @@ export function useDrawingCanvas(
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: canvasSize,
       height: canvasSize,
-      enableRetinaScaling: false, // Retinaディスプレイの自動スケーリングを無効化
+      backgroundColor: "#ffffff",
+      enableRetinaScaling: false,
     });
 
     // 手書き機能を追加
@@ -76,6 +77,7 @@ export function useDrawingCanvas(
 
     window.addEventListener("resize", handleResize);
 
+    fabricCanvas.renderAll();
     setCanvas(fabricCanvas);
 
     return () => {
