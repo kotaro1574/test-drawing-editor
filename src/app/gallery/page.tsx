@@ -29,9 +29,9 @@ export default async function GalleryPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {drawings.map((drawing) => (
-              <Link key={drawing.id} href={`/share/${drawing.id}`}>
-                <div className="glass-card rounded-xl overflow-hidden hover:scale-105 hover:glow transition-all duration-300">
-                  <div className="aspect-square">
+              <div key={drawing.id} className="glass-card rounded-xl overflow-hidden">
+                <Link href={`/share/${drawing.id}`}>
+                  <div className="aspect-square hover:opacity-80 transition-opacity duration-200">
                     <img
                       src={`/api/drawings/${drawing.id}`}
                       alt="描いた絵"
@@ -41,8 +41,16 @@ export default async function GalleryPage() {
                       height={250}
                     />
                   </div>
+                </Link>
+                <div className="px-3 py-2 text-center border-t border-gray-200/30">
+                  <Link
+                    href={`/gallery/${drawing.id}/delete`}
+                    className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    削除
+                  </Link>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

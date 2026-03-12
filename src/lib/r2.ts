@@ -35,6 +35,10 @@ export async function drawingExists(id: string): Promise<boolean> {
   }
 }
 
+export async function deleteDrawing(id: string): Promise<boolean> {
+  return s3.deleteObject(`drawings/${id}.png`);
+}
+
 export async function listDrawings(): Promise<DrawingItem[]> {
   const result = await s3.listObjects("/", "drawings/", 100);
 
