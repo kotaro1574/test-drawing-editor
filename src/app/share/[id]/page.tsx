@@ -16,13 +16,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: "お絵描きエディター - みんなの絵",
     description: "お絵描きエディターで絵を描いたよ！見てみてね！",
     openGraph: {
+      type: "article",
       title: "お絵描きエディター - みんなの絵",
       description: "お絵描きエディターで絵を描いたよ！見てみてね！",
+      url: `${baseUrl}/share/${id}`,
       images: [
         {
           url: `${baseUrl}/api/drawings/${id}`,
           width: 1000,
           height: 1000,
+          type: "image/png",
         },
       ],
     },

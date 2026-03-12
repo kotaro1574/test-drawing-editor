@@ -7,6 +7,11 @@ export const runtime = "edge";
 export const metadata: Metadata = {
   title: "お絵描きエディター - みんなの絵",
   description: "みんなが描いた絵を見てみよう！",
+  openGraph: {
+    type: "website",
+    title: "お絵描きエディター - みんなの絵",
+    description: "みんなが描いた絵を見てみよう！",
+  },
 };
 
 export default async function GalleryPage() {
