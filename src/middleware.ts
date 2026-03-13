@@ -17,6 +17,9 @@ export function middleware(req: NextRequest) {
     const encoded = authorization.split(" ")[1];
     const [user, password] = atob(encoded).split(":");
 
+    console.log(user, password);
+    console.log(process.env.BASIC_AUTH_USER, process.env.BASIC_AUTH_PASSWORD);
+
     if (
       user === process.env.BASIC_AUTH_USER &&
       password === process.env.BASIC_AUTH_PASSWORD
