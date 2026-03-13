@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { drawingExists } from "@/lib/r2";
 
 export const runtime = "edge";
@@ -50,7 +51,7 @@ export default async function SharePage({ params }: Props) {
     <main className="min-h-screen py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">みんなの絵を見てね！</h1>
-        <div className="glass-card rounded-2xl overflow-hidden p-2">
+        <div className="glass-card rounded-2xl overflow-hidden p-2 mb-4">
           <img
             src={`/api/drawings/${id}`}
             alt="描いた絵"
@@ -58,6 +59,14 @@ export default async function SharePage({ params }: Props) {
             width={1000}
             height={1000}
           />
+        </div>
+        <div className="text-center">
+          <Link
+            href={`/gallery/${id}/delete`}
+            className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+          >
+            この絵を削除する
+          </Link>
         </div>
       </div>
     </main>
